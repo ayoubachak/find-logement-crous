@@ -1,0 +1,26 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE alerts (
+	id INTEGER NOT NULL, 
+	name VARCHAR(100) NOT NULL, 
+	city VARCHAR(100) NOT NULL, 
+	price FLOAT NOT NULL, 
+	emails TEXT NOT NULL, 
+	bounds VARCHAR(255), 
+	status BOOLEAN, 
+	interval INTEGER, 
+	created_at DATETIME, 
+	updated_at DATETIME, 
+	PRIMARY KEY (id)
+);
+INSERT INTO alerts VALUES(1,'Villeurbanne','Villeurbanne',500.0,'ayoub.achak01@gmail.com','4.8583627_45.7955875_4.9212614_45.7484524',1,10,'2024-10-16 19:27:05.871730','2024-10-16 19:54:12.677197');
+INSERT INTO alerts VALUES(3,'Lyon','Lyon',500.0,'ayoub.achak01@gmail.com','4.7718134_45.8082628_4.8983774_45.7073666',1,15,'2024-10-16 20:31:03.360005','2024-10-16 20:31:03.360005');
+CREATE TABLE alert_logs (
+	id INTEGER NOT NULL, 
+	alert_id INTEGER NOT NULL, 
+	log TEXT NOT NULL, 
+	created_at DATETIME, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(alert_id) REFERENCES alerts (id)
+);
+COMMIT;

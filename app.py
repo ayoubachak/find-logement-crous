@@ -16,7 +16,12 @@ load_dotenv(override=True)
 app = Flask(__name__)
 SECRET_KEY = os.getenv('SECRET_KEY')
 assert SECRET_KEY, 'SECRET_KEY environment variable not set'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///alerts.db'
+
+# Get the PostgreSQL connection string from the environment variable
+DATABASE_URL = os.getenv('DATABASE_URL')
+assert DATABASE_URL, 'DATABASE_URL environment variable not set'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = SECRET_KEY
 

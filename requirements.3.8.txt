@@ -6,3 +6,4 @@ requests
 python-dotenv
 gunicorn
 urllib3==1.26.16
+psycopg2-binary
