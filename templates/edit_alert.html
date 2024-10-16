@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="text-2xl font-bold mb-4">Edit Alert</h1>
+
+    <form action="{{ url_for('edit_alert', alert_id=alert.id) }}" method="POST">
+        <!-- City Search Box -->
+        <label for="searchLocation">City:</label>
+        <input type="text" id="searchLocation" name="city" value="{{ alert.city }}" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Search for a city">
+    
+        <!-- Suggestions List -->
+        <ul id="suggestions" class="mt-2 border border-gray-300 bg-white rounded-md shadow-sm"></ul>
+
+        <!-- Hidden input for Bounds -->
+        <input type="hidden" id="bounds" name="bounds" value="{{ alert.bounds }}">
+    
+        <!-- Other Inputs -->
+        <label for="price" class="block mt-4">Max Price:</label>
+        <input type="number" name="price" step="0.01" value="{{ alert.price }}" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+    
+        <label for="emails" class="block mt-4">Emails (comma separated):</label>
+        <textarea name="emails" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">{{ alert.emails }}</textarea>
+    
+        <label for="interval" class="block mt-4">Refresh Interval (seconds):</label>
+        <input type="number" name="interval" value="{{ alert.interval }}" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+    
+        <label for="status" class="block mt-4">Activate Alert:</label>
+        <input type="checkbox" name="status" {% if alert.status %}checked{% endif %} class="mr-2">
+    
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Save Changes</button>
+    </form>
+{% endblock %}

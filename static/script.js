@@ -1,12 +1,11 @@
 const socket = io();
-
 const photonAPIUrl = "https://photon.komoot.io/api/";
 
-document.getElementById('searchLocation').addEventListener('input', async function () {
+document.getElementById('searchLocation')?.addEventListener('input', async function () {
     const query = this.value;
 
     // If "No Location" is checked, clear the bounds
-    if (document.getElementById('noLocationCheckbox').checked) {
+    if (document.getElementById('noLocationCheckbox') && document.getElementById('noLocationCheckbox').checked) {
         document.getElementById('bounds').value = '';  // Clear bounds if "No Location" is selected
         return;
     }
@@ -38,7 +37,7 @@ document.getElementById('searchLocation').addEventListener('input', async functi
                             bounds = `${lng - 0.01}_${lat + 0.01}_${lng + 0.01}_${lat - 0.01}`;
                         }
 
-                        document.getElementById('bounds').value = bounds;  // Update the bounds input field
+                        document.getElementById('bounds').value = bounds;  // Update the hidden bounds input field
                         document.getElementById('searchLocation').value = feature.properties.name;  // Update search bar with selected location
                         suggestionsList.innerHTML = '';  // Clear suggestions after selection
                     });
@@ -52,7 +51,7 @@ document.getElementById('searchLocation').addEventListener('input', async functi
     }
 });
 
-document.getElementById('noLocationCheckbox').addEventListener('change', function () {
+document.getElementById('noLocationCheckbox')?.addEventListener('change', function () {
     if (this.checked) {
         document.getElementById('bounds').value = '';  // Clear bounds if "No Location" is selected
         document.getElementById('searchLocation').disabled = true;  // Disable location search
@@ -62,7 +61,7 @@ document.getElementById('noLocationCheckbox').addEventListener('change', functio
     }
 });
 
-document.getElementById('start').addEventListener('click', function () {
+document.getElementById('start')?.addEventListener('click', function () {
     const maxPrice = document.getElementById('maxPrice').value;
     const bounds = document.getElementById('bounds').value;  // Can be empty if "No Location" is selected
 
@@ -72,7 +71,7 @@ document.getElementById('start').addEventListener('click', function () {
     });
 });
 
-document.getElementById('stop').addEventListener('click', function () {
+document.getElementById('stop')?.addEventListener('click', function () {
     socket.emit('stop_scraping');
 });
 

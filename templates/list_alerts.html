@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="text-2xl font-bold mb-4">All Alerts</h1>
+    <a href="{{ url_for('create_alert') }}" class="text-blue-500">Create New Alert</a>
+    <ul class="mt-4">
+        {% for alert in alerts %}
+            <li class="mb-2">
+                {{ alert.city }} - €{{ alert.price }}
+                <a href="{{ url_for('edit_alert', alert_id=alert.id) }}" class="text-blue-500">Edit</a> |
+                <a href="{{ url_for('toggle_alert_status', alert_id=alert.id) }}" class="text-blue-500">
+                    {{ 'Deactivate' if alert.status else 'Activate' }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
