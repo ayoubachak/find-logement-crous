@@ -4,3 +4,4 @@ flask-sqlalchemy
 beautifulsoup4
 requests
 python-dotenv
+gunicorn
