@@ -1,0 +1,8 @@
+{
+    "title": "Housing Scraper",
+    "description": "A tool to scrape and notify you of available housing options.",
+    "author": "Ayoub Achak",
+    "keywords": "housing, scraper, real-time",
+    "favicon": "/static/favicon.ico"
+  }
+  
