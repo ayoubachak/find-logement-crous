@@ -18,7 +18,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 assert SECRET_KEY, 'SECRET_KEY environment variable not set'
 
 # Get the PostgreSQL connection string from the environment variable
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///alerts.db')
 assert DATABASE_URL, 'DATABASE_URL environment variable not set'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
@@ -198,4 +198,4 @@ def handle_stop_scraping():
     logger.info('Scraping stopped manually.')
 
 if __name__ == '__main__':
-    socketio.run(app, debug=False, allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
