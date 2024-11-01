@@ -30,8 +30,8 @@ Follow these simple steps to set up and run the project:
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/ayoubachak/housing-alert-system.git
-   cd housing-alert-system
+   git clone https://github.com/ayoubachak/find-logement-crous.git
+   cd find-logement-crous
    ```
 
 2. **Create a Virtual Environment**
