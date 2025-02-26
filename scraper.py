@@ -57,7 +57,7 @@ def check_for_results(alert):
     max_price = alert.price
     bounds = alert.bounds
 
-    url = f"https://trouverunlogement.lescrous.fr/tools/36/search?maxPrice={max_price}&bounds={bounds}"
+    url = f"https://trouverunlogement.lescrous.fr/tools/37/search?maxPrice={max_price}&bounds={bounds}"
     headers = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "user-agent": "Mozilla/5.0"
