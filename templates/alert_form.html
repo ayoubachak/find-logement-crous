@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block body_class %}app-body{% endblock %}
+{% block container_class %}app-shell{% endblock %}
+
+{% block head_extra %}
+<style>
+    .app-body {
+        margin: 0; padding: 0; background: #f4f6fb; color: #1f2937;
+        font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.5;
+    }
+    .app-shell { max-width: 1280px; margin: 0 auto; padding: 28px 24px 56px; }
+    .app-shell *, .app-shell *::before, .app-shell *::after { box-sizing: border-box; }
+
+    .form-wrap { max-width: 720px; margin: 0 auto; }
+    .back { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 14px; color: #6b7280; font-weight: 600; text-decoration: none; }
+    .back:hover { color: #4f46e5; }
+    .page-title { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.01em; color: #111827; }
+    .page-sub { margin: 2px 0 22px; color: #6b7280; }
+
+    .card { background: #fff; border: 1px solid #e6e9f0; border-radius: 14px; box-shadow: 0 1px 2px rgba(16, 24, 40, .04); }
+    .card-b { padding: 24px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+    .field { margin-bottom: 20px; position: relative; }
+    .grid-2 .field { margin-bottom: 20px; }
+    .field > label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #374151; }
+    .field input[type="text"], .field input[type="number"], .field textarea {
+        width: 100%; padding: 10px 12px; border: 1px solid #d9dde6; border-radius: 9px; background: #fff;
+        font-size: 14px; color: #111827; font-family: inherit; transition: border-color .15s, box-shadow .15s;
+    }
+    .field textarea { resize: vertical; min-height: 72px; }
+    .field input:focus, .field textarea:focus { outline: none; border-color: #818cf8; box-shadow: 0 0 0 3px rgba(99, 102, 241, .18); }
+    .hint { margin: 6px 0 0; font-size: 12.5px; color: #6b7280; }
+    .error { margin: 6px 0 0; font-size: 12.5px; font-weight: 600; color: #b42318; min-height: 0; }
+    .error:empty { display: none; }
+
+    .adorn-wrap { position: relative; }
+    .adorn-wrap .adorn { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #6b7280; font-weight: 600; pointer-events: none; }
+    .adorn-wrap input { padding-left: 28px !important; }
+
+    /* city suggestions (filled by script.js) */
+    #suggestions { margin: 6px 0 0; padding: 4px; list-style: none; border: 1px solid #e6e9f0; border-radius: 10px; background: #fff; box-shadow: 0 8px 24px rgba(16, 24, 40, .08); max-height: 240px; overflow-y: auto; }
+    #suggestions:empty { display: none; }
+    #suggestions li { padding: 9px 12px; border-radius: 7px; cursor: pointer; }
+    #suggestions li:hover { background: #eef2ff; color: #3730a3; }
+
+    .opt { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; margin-bottom: 8px; border: 1px solid #e6e9f0; border-radius: 10px; background: #fafbfd; cursor: pointer; }
+    .opt-text { display: flex; flex-direction: column; }
+    .opt-text strong { font-weight: 600; color: #111827; }
+    .opt-text small { color: #6b7280; font-size: 12.5px; }
+    .switch { position: relative; width: 42px; height: 24px; flex: none; }
+    .switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; z-index: 1; }
+    .slider { position: absolute; inset: 0; background: #d1d5db; border-radius: 999px; transition: background .2s; }
+    .slider::before { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .25); transition: transform .2s; }
+    .switch input:checked + .slider { background: #4f46e5; }
+    .switch input:checked + .slider::before { transform: translateX(18px); }
+    .switch input:focus-visible + .slider { outline: 2px solid #a5b4fc; outline-offset: 2px; }
+
+    .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #eef0f5; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 18px; border-radius: 9px; border: 1px solid transparent; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background .15s; font-family: inherit; }
+    .btn-primary { background: #4f46e5; color: #fff; }
+    .btn-primary:hover { background: #4338ca; }
+    .btn-ghost { background: #fff; color: #374151; border-color: #d9dde6; }
+    .btn-ghost:hover { background: #f3f4f8; }
+</style>
+{% endblock %}
+
+{% block content %}
+    {% set editing = alert is defined and alert %}
+    <div class="form-wrap">
+        <a href="{{ url_for('index') }}" class="back">&larr; Back to alerts</a>
+        <h1 class="page-title">{{ 'Edit alert' if editing else 'Create new alert' }}</h1>
+        <p class="page-sub">{{ 'Change what this alert watches and how it notifies you.' if editing else 'Choose a city and a budget, and get an email when new housing appears.' }}</p>
+
+        <form id="alert-form" class="card" method="POST"
+              action="{{ url_for('edit_alert', alert_id=alert.id) if editing else url_for('create_alert') }}">
+            <div class="card-b">
+                <!-- City search (script.js fills the suggestions and the hidden bounds) -->
+                <div class="field">
+                    <label for="searchLocation">City</label>
+                    <input type="text" id="searchLocation" name="city" required autocomplete="off"
+                           placeholder="Search for a city" value="{{ alert.city if editing else '' }}">
+                    <ul id="suggestions"></ul>
+                    <p class="error" id="city-error"></p>
+                    <p class="hint">Type a city, then pick a suggestion to set the search area.</p>
+                    <input type="hidden" id="bounds" name="bounds" value="{{ alert.bounds if editing else '' }}">
+                </div>
+
+                <div class="grid-2">
+                    <div class="field">
+                        <label for="price">Max price</label>
+                        <div class="adorn-wrap">
+                            <span class="adorn">&euro;</span>
+                            <input type="number" id="price" name="price" step="0.01" min="0" required
+                                   value="{{ '%g'|format(alert.price) if editing else '' }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="interval">Refresh interval (seconds)</label>
+                        <input type="number" id="interval" name="interval" min="2" required
+                               value="{{ alert.interval if editing else 300 }}">
+                    </div>
+                </div>
+                <p class="hint" style="margin: -8px 0 20px;">The interval is ignored while &ldquo;Randomize the wait&rdquo; is on (see the dashboard).</p>
+
+                <div class="field">
+                    <label for="emails">Emails</label>
+                    <textarea id="emails" name="emails" required rows="2"
+                              placeholder="you@example.com, friend@example.com">{{ alert.emails if editing else '' }}</textarea>
+                    <p class="hint">Separate several addresses with commas.</p>
+                </div>
+
+                <label class="opt">
+                    <span class="opt-text"><strong>Activate alert</strong><small>Start checking right away.</small></span>
+                    <span class="switch">
+                        <input type="checkbox" name="status" {% if (not editing) or alert.status %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </span>
+                </label>
+
+                <div class="actions">
+                    <a href="{{ url_for('index') }}" class="btn btn-ghost">Cancel</a>
+                    <button type="submit" class="btn btn-primary">{{ 'Save changes' if editing else 'Create alert' }}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+    (function () {
+        var form = document.getElementById('alert-form');
+        var bounds = document.getElementById('bounds');
+        var city = document.getElementById('searchLocation');
+        var err = document.getElementById('city-error');
+
+        // The server needs the search area, which is set when a suggestion is picked.
+        form.addEventListener('submit', function (e) {
+            if (!bounds.value) {
+                e.preventDefault();
+                err.textContent = 'Pick a city from the suggestions so the search area is set.';
+                city.focus();
+            }
+        });
+        city.addEventListener('input', function () { err.textContent = ''; });
+    })();
+    </script>
+{% endblock %}

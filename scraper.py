@@ -24,6 +24,9 @@ DEFAULT_LOCATION = "Île-de-France"
 SEEN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seen_offers.json")
 _seen_lock = threading.Lock()
 
+# Written when new listings are found; notifier.py (desktop toasts) watches this file.
+NOTIFY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "latest_notification.json")
+
 
 # ---------------------------------------------------------------- seen store
 def _load_seen():
@@ -67,6 +70,31 @@ def clear_seen(alert_id):
         data = _load_seen()
         if data.pop(str(alert_id), None) is not None:
             _save_seen(data)
+
+
+def _write_notification(new_offers, total):
+    """Drop a small JSON file that the desktop notifier picks up."""
+    try:
+        payload = {
+            "id": datetime.now().isoformat(),
+            "new": len(new_offers),
+            "total": total,
+            "offers": [
+                {
+                    "title": o["title"],
+                    "price": o["price"],
+                    "link": o["link"],
+                    "description": o["description"],
+                }
+                for o in new_offers
+            ],
+        }
+        tmp = NOTIFY_FILE + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+        os.replace(tmp, NOTIFY_FILE)
+    except Exception:
+        logger.exception('Could not write notification file')
 
 
 # ------------------------------------------------------------------- helpers
@@ -258,6 +286,7 @@ def check_for_results(alert):
 
         if send_email(message, new_offers, recipient_emails, subject=subject):
             _update_seen(alert_id, url, current_links)
+            _write_notification(new_offers, len(current_links))
             return True
 
         # Email failed: keep the old state so the same listings are retried next cycle
