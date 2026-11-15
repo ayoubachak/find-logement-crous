@@ -4,3 +4,49 @@ __pycache__/
 node_modules/
 package-lock.json
 context.md 
+service.log
+seen_offers.json
+instance/alerts.db
+instance/alerts.db
+
+# ---- Secrets (never commit) ----
+.env
+.env.*
+!.env.example
+
+# ---- Python ----
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# ---- Database ----
+# Flask-SQLAlchemy 3 stores sqlite:///alerts.db in instance/alerts.db
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# ---- Runtime files created by the app ----
+seen_offers.json
+settings.json
+latest_notification.json
+helper.heartbeat
+logs.txt
+service.log
+*.log
+*.tmp
+
+# ---- Node / Tailwind tooling (output.css itself is NOT ignored) ----
+node_modules/
+
+# ---- Editors and OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+instance/alerts.db
+instance/alerts.db
+/instance

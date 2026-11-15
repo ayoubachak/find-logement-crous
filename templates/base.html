@@ -19,11 +19,14 @@
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
+    <!-- Page-specific head content (optional) -->
+    {% block head_extra %}{% endblock %}
+
     <!-- Socket.IO -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+<body class="{% block body_class %}bg-gray-100 p-8{% endblock %}">
+    <div class="{% block container_class %}max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6{% endblock %}">
         <!-- Block for content -->
         {% block content %}{% endblock %}
     </div>
